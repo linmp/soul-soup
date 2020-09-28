@@ -81,40 +81,6 @@ def wx_login():
         return data
 
 
-# 字节tt登录 后台去获取登录信息 ，小程序传入请求的lg_code去获取用户的openid //
-@app.route('/tt/login')
-def tt_login():
-    """
-    请求获得用户的openid
-    属性	类型	默认值	必填	说明
-    appid	string		是	小程序 appId
-    secret	string		是	小程序 appSecret
-    js_code	string		是	登录时获取的 code
-    grant_type	string		是	授权类型，此处只需填写 authorization_code
-    :return:
-    返回的 JSON 数据包
-    属性	类型	说明
-    openid	string	用户唯一标识
-    session_key	string	会话密钥
-    unionid	string	用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
-    errcode	number	错误码
-    errmsg	string	错误信息
-    """
-    lg_code = request.args.get('lg_code')
-    url = f"https://api.weixin.qq.com/sns/jscode2session?appid={wx_appid}&secret={wx_secret}&js_code={lg_code}&grant_type=authorization_code"
-    rq = requests.get(url)
-    rq_json = rq.json()
-    print(rq_json)
-
-    if rq_json.get('errcode'):
-        data = {"error": rq_json.get('errmsg')}
-        data = jsonify(data)
-        return data
-    else:
-        data = jsonify({"openid": rq_json.get('openid')})
-        return data
-
-
 # 更新用户的信息 openid 昵称 头像链接  注册新用户 判断用户状态
 @app.route('/update', methods=["POST"])
 def update():
